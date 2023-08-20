@@ -80,3 +80,4 @@ class BotStack(Stack):
         }
 
         rule.add_target(targets.LambdaFunction(fastapi_cdk_function, event=default_event))
+        rule.add_target(targets.LambdaFunction(fastapi_cdk_function, event=events.RuleTargetInput.from_object(default_event)))
