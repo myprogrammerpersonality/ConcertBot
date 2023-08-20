@@ -1,10 +1,13 @@
 import os
+import json
 from constructs import Construct
 from aws_cdk import (
     Stack,
     Duration,
     aws_apigateway as apigateway,
     aws_lambda as lambda_,
+    aws_events as events,
+    aws_events_targets as targets,
 )
 
 
@@ -54,3 +57,30 @@ class BotStack(Stack):
             ),
             any_method=True,
         )
+
+
+        # Schedule Lambda function with EventBridge
+        rule = events.Rule(
+            self,
+            "Rule",
+            schedule=events.Schedule.cron(
+                minute="30",  # At minute 30
+                hour="6",  # At 6:00 AM UTC (10:00 AM +3:30 Tehran time)
+                # Note: The time zone of the schedule is UTC by default
+            ),
+        )
+
+        # Add default data for the trigger
+        default_event = {
+            "body": json.dumps({
+                "message": {
+                    "text": "/scrape",
+                    "chat": {
+                        "id": os.getenv(key="CHAT_ID"),
+                        "first_name": "Ali"
+                    }
+                }
+            })
+        }
+
+        rule.add_target(targets.LambdaFunction(fastapi_cdk_function, event=default_event))

@@ -9,6 +9,9 @@ class Event(BaseModel):
     date_iran: str
     date_world: str
 
+    def __str__(self):
+        return f"{self.title}\n{self.image}\n{self.date_iran}\n{self.date_world}"
+
 
 def scrape_webpage():
     url = 'https://www.darkoob.ir/tc/Concert/tehran'  # Replace with the URL of the web page you want to scrape
