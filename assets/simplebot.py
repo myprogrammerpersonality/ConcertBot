@@ -20,10 +20,14 @@ def lambda_handler(event, context):
     try:
         data = json.loads(event["body"])
         logger.info(data)
-
-        message = str(data["message"]["text"])
-        chat_id = data["message"]["chat"]["id"]
-        first_name = data["message"]["chat"].get("first_name", "Unknown")
+        if 'channel_post' in data.keys():
+            message = str(data["channel_post"]["text"])
+            chat_id = data["channel_post"]["chat"]["id"]
+            first_name = "Unknown"
+        else:
+            message = str(data["message"]["text"])
+            chat_id = data["message"]["chat"]["id"]
+            first_name = data["message"]["chat"].get("first_name", "Unknown")
 
 
         if message == "/start":
