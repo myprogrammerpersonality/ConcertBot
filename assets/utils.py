@@ -8,9 +8,10 @@ class Event(BaseModel):
     image: str
     date_iran: str
     date_world: str
+    done: bool
 
     def __str__(self):
-        return f"{self.title}\n{self.image}\n{self.date_iran}\n{self.date_world}"
+        return f"{self.title}\n{self.date_iran}\n{self.date_world}\n{self.image}"
 
 
 def scrape_webpage():
@@ -27,8 +28,14 @@ def scrape_webpage():
         date = event.find('div', class_='allmode_text').find('div', class_='clearb').find('div', class_="event_detail").find('span', 'dt1').text
         date_iran = date.strip().split('\n')[0].strip()
         date_world = date.strip().split('\n')[-1].strip()
+        done = False
+        for detail in event.find('div', class_='allmode_text').find_all('div', class_='event_detail'):
+            data = detail.find('span', 'dt1').find('font', attrs={'color': 'red'})
+            if data:
+                if data.text.strip() == "برگزار شده":
+                    done = True
 
-        result = Event(title=title, image=image, date_iran=date_iran, date_world=date_world)
+        result = Event(title=title, image=image, date_iran=date_iran, date_world=date_world, done=done)
         results.append(result)
     
     print(results)

@@ -30,6 +30,18 @@ def lambda_handler(event, context):
             response = f"Hello {first_name}"
             logger.info(response)
         elif message == "/scrape":
+            counter = 0
+            response = scrape_webpage()
+            for result in response:
+                if not result.done:
+                    counter += 1
+                    send_message(chat_id, str(result))
+            if counter == 0:
+                response = "No New Events Today!"
+            else:
+                response = f"Sent {counter} events!"
+            logger.info(response)
+        elif message == "/scrape all":
             response = scrape_webpage()
             for result in response:
                 send_message(chat_id, str(result))
