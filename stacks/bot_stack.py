@@ -63,11 +63,7 @@ class BotStack(Stack):
         rule = events.Rule(
             self,
             "Rule",
-            schedule=events.Schedule.cron(
-                minute="30",  # At minute 30
-                hour="6",  # At 6:00 AM UTC (10:00 AM +3:30 Tehran time)
-                # Note: The time zone of the schedule is UTC by default
-            ),
+            schedule=events.Schedule.rate(Duration.minutes(5)), # Trigger every 5 minutes
         )
 
         # Add default data for the trigger
