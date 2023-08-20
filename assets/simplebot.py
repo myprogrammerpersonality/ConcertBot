@@ -1,10 +1,15 @@
 import os
 import requests
 import json
+from utils import scrape_webpage
 
 TOKEN = os.environ.get('BOT_TOKEN')
 BASE_URL = f"https://api.telegram.org/bot{TOKEN}"
 
+def send_message(chat_id, text):
+    url = BASE_URL + "/sendMessage"
+    data = {"text": text.encode("utf8"), "chat_id": chat_id}
+    requests.post(url, data)
 
 def lambda_handler(event, context):
     try:
@@ -13,14 +18,15 @@ def lambda_handler(event, context):
         chat_id = data["message"]["chat"]["id"]
         first_name = data["message"]["chat"]["first_name"]
 
-        response = "Please /start, {}".format(first_name)
 
-        if "start" in message:
+        if message == "/start":
             response = "Hello {}".format(first_name)
+        elif message == "/scrape":
+            response = scrape_webpage()
+        else:
+            response = "Please use /start or /scrape"
 
-        data = {"text": response.encode("utf8"), "chat_id": chat_id}
-        url = BASE_URL + "/sendMessage"
-        requests.post(url, data)
+        send_message(chat_id, response)
 
     except Exception as e:
         print(e)
