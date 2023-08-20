@@ -20,9 +20,14 @@ def lambda_handler(event, context):
 
 
         if message == "/start":
-            response = "Hello {}".format(first_name)
+            response = f"Hello {first_name}"
         elif message == "/scrape":
             response = scrape_webpage()
+            for result in response:
+                send_message(chat_id, str(result))
+            response = f"Sent {len(response)} events!"
+        elif message == "/info":
+            response = f"Your Chat ID is {chat_id}"
         else:
             response = "Please use /start or /scrape"
 
