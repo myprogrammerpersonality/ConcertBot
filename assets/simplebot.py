@@ -40,25 +40,28 @@ def lambda_handler(event, context):
                 if not result.done:
                     counter += 1
                     send_message(chat_id, str(result))
+                response = f"Sent {counter} events!"
+                logger.info(response)
             if counter == 0:
                 response = "No New Events Today!"
-            else:
-                response = f"Sent {counter} events!"
-            logger.info(response)
+                logger.info(response)
+        
         elif message == "/scrape all":
             response = scrape_webpage()
             for result in response:
                 send_message(chat_id, str(result))
             response = f"Sent {len(response)} events!"
+            send_message(chat_id, response)
             logger.info(response)
         elif message == "/info":
             response = f"Your Chat ID is {chat_id}"
+            send_message(chat_id, response)
             logger.info(response)
         else:
             response = "Please use /start or /scrape"
+            send_message(chat_id, response)
             logger.info(response)
 
-        send_message(chat_id, response)
 
     except Exception as e:
         print(e)
