@@ -12,7 +12,7 @@ class Event(BaseModel):
     done: bool
 
     def __str__(self):
-        return f"{self.title}\n{self.date_iran}\n{self.date_world}\n{self.image}\n{self.title_link}"
+        return f"<a href='{self.title_link}'>{self.title}</a>\n{self.date_iran}\n{self.date_world}\n{self.image}"
 
 
 def scrape_webpage():

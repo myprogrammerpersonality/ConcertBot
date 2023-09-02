@@ -13,7 +13,9 @@ BASE_URL = f"https://api.telegram.org/bot{TOKEN}"
 
 def send_message(chat_id, text):
     url = BASE_URL + "/sendMessage"
-    data = {"text": text.encode("utf8"), "chat_id": chat_id}
+    data = {"text": text.encode("utf8"),
+            "chat_id": chat_id,
+            "parse_mode": "html"}
     requests.post(url, data)
 
 def lambda_handler(event, context):
