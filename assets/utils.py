@@ -5,13 +5,14 @@ from pydantic import BaseModel
 
 class Event(BaseModel):
     title: str
+    title_link: str
     image: str
     date_iran: str
     date_world: str
     done: bool
 
     def __str__(self):
-        return f"{self.title}\n{self.date_iran}\n{self.date_world}\n{self.image}"
+        return f"{self.title}\n{self.date_iran}\n{self.date_world}\n{self.image}\n{self.title_link}"
 
 
 def scrape_webpage():
@@ -24,6 +25,7 @@ def scrape_webpage():
     results = []
     for event in events_list:
         title = event.find('h4', class_='allmode_title').find('a').text.strip()
+        title_link = event.find('h4', class_='allmode_title').find('a')['href']
         image = event.find('div', class_='allmode_img').find('img')['src']
         date = event.find('div', class_='allmode_text').find('div', class_='clearb').find('div', class_="event_detail").find('span', 'dt1').text
         date_iran = date.strip().split('\n')[0].strip()
@@ -35,7 +37,7 @@ def scrape_webpage():
                 if data.text.strip() == "برگزار شده":
                     done = True
 
-        result = Event(title=title, image=image, date_iran=date_iran, date_world=date_world, done=done)
+        result = Event(title=title, title_link=title_link, image=image, date_iran=date_iran, date_world=date_world, done=done)
         results.append(result)
     
     print(results)
