@@ -2,9 +2,9 @@ import os
 import json
 from constructs import Construct
 from aws_cdk import (
-    core,
     Stack,
     Duration,
+    RemovalPolicy,
     aws_apigateway as apigateway,
     aws_lambda as lambda_,
     aws_events as events,
@@ -67,7 +67,7 @@ class BotStack(Stack):
                 name="event_id",
                 type=dynamodb.AttributeType.STRING
             ),
-            removal_policy=core.RemovalPolicy.DESTROY,  # This will delete the table when the stack is destroyed. Be cautious with this in production.
+            removal_policy=RemovalPolicy.DESTROY,  # This will delete the table when the stack is destroyed. Be cautious with this in production.
             billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST  # Use on-demand pricing. Adjust according to your needs.
         )
 
