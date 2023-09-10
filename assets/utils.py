@@ -4,7 +4,11 @@ from pydantic import BaseModel
 import os
 import boto3
 import hashlib
+import logging
 
+# Set up logging
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(os.environ['EVENTS_TABLE'])
@@ -54,7 +58,8 @@ def event_exists(event_hash):
     return 'Item' in response
 
 def store_event(event_hash):
-    table.put_item(Item={'event_id': event_hash})
+    response = table.put_item(Item={'event_id': event_hash})
+    logger.info(response)
 
 def generate_event_hash(event):
     unique_string = event.title + event.date_world
