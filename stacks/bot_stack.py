@@ -2,12 +2,14 @@ import os
 import json
 from constructs import Construct
 from aws_cdk import (
+    core,
     Stack,
     Duration,
     aws_apigateway as apigateway,
     aws_lambda as lambda_,
     aws_events as events,
     aws_events_targets as targets,
+    aws_dynamodb as dynamodb,
 )
 
 
@@ -58,7 +60,23 @@ class BotStack(Stack):
             any_method=True,
         )
 
+        # Add a DynamoDB table
+        events_table = dynamodb.Table(
+            self, 'EventsTable',
+            partition_key=dynamodb.Attribute(
+                name="event_id",
+                type=dynamodb.AttributeType.STRING
+            ),
+            removal_policy=core.RemovalPolicy.DESTROY,  # This will delete the table when the stack is destroyed. Be cautious with this in production.
+            billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST  # Use on-demand pricing. Adjust according to your needs.
+        )
 
+        # Grant the Lambda function permission to read/write to the DynamoDB table
+        events_table.grant_read_write_data(fastapi_cdk_function)
+
+        # Add DynamoDB table name to Lambda environment variables
+        fastapi_cdk_function.add_environment("EVENTS_TABLE", events_table.table_name)
+        
         # Schedule Lambda function with EventBridge
         rule = events.Rule(
             self,

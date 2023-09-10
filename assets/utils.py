@@ -1,7 +1,13 @@
 import requests
 from bs4 import BeautifulSoup
 from pydantic import BaseModel
+import os
+import boto3
+import hashlib
 
+
+dynamodb = boto3.resource('dynamodb')
+table = dynamodb.Table(os.environ['EVENTS_TABLE'])
 
 class Event(BaseModel):
     title: str
@@ -42,3 +48,14 @@ def scrape_webpage():
     
     print(results)
     return results
+
+def event_exists(event_hash):
+    response = table.get_item(Key={'event_id': event_hash})
+    return 'Item' in response
+
+def store_event(event_hash):
+    table.put_item(Item={'event_id': event_hash})
+
+def generate_event_hash(event):
+    unique_string = event.title + event.date_world
+    return hashlib.md5(unique_string.encode()).hexdigest()

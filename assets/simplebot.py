@@ -2,7 +2,7 @@ import os
 import requests
 import json
 import logging
-from utils import scrape_webpage
+from utils import scrape_webpage, event_exists, store_event, generate_event_hash
 
 # Set up logging
 logger = logging.getLogger()
@@ -22,6 +22,8 @@ def lambda_handler(event, context):
     try:
         data = json.loads(event["body"])
         logger.info(data)
+
+        # Preprocess the message
         if 'channel_post' in data.keys():
             message = str(data["channel_post"]["text"])
             chat_id = data["channel_post"]["chat"]["id"]
@@ -31,23 +33,26 @@ def lambda_handler(event, context):
             chat_id = data["message"]["chat"]["id"]
             first_name = data["message"]["chat"].get("first_name", "Unknown")
 
-
+        # Respond to the message based on the command
         if message == "/start":
             response = f"Hello {first_name}"
             logger.info(response)
+        
         elif message == "/scrape":
             counter = 0
             response = scrape_webpage()
             for result in response:
-                if not result.done:
+                event_hash = generate_event_hash(result)
+                if not result.done and not event_exists(event_hash):
                     counter += 1
                     send_message(chat_id, str(result))
+                    store_event(event_hash)
+
                 response = f"Sent {counter} events!"
                 logger.info(response)
             if counter == 0:
-                response = "No New Events Today!"
-                logger.info(response)
-        
+                logger.info("No New Events Today!")
+
         elif message == "/scrape all":
             response = scrape_webpage()
             for result in response:
@@ -55,10 +60,12 @@ def lambda_handler(event, context):
             response = f"Sent {len(response)} events!"
             send_message(chat_id, response)
             logger.info(response)
+        
         elif message == "/info":
             response = f"Your Chat ID is {chat_id}"
             send_message(chat_id, response)
             logger.info(response)
+        
         else:
             response = "Please use /start or /scrape"
             send_message(chat_id, response)
