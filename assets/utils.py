@@ -50,7 +50,7 @@ def scrape_webpage():
         result = Event(title=title, title_link=title_link, image=image, date_iran=date_iran, date_world=date_world, done=done)
         results.append(result)
     
-    print(results)
+    logger.info(results)
     return results
 
 def event_exists(event_hash):
