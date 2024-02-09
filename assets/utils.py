@@ -30,7 +30,7 @@ class Event(BaseModel):
 
 def scrape_webpage():
     # Replace with the URL of the web page you want to scrape
-    url = 'https://www.darkoob.ir/tc/Concert/tehran'
+    url = 'https://eventro.ir/tc/Concert/tehran'
     headers = {'User-Agent': 'Mozilla/5.0'}
     response = requests.get(url, headers=headers)
     soup = BeautifulSoup(response.text, 'html.parser')
@@ -87,9 +87,10 @@ def send_message(chat_id, text, BASE_URL, parse_mode="html"):
     requests.post(url, data)
 
 
-def send_photo(chat_id, photo, BASE_URL, caption=""):
+def send_photo(chat_id, photo, BASE_URL, caption="", parse_mode="html"):
     url = BASE_URL + "/sendPhoto"
     data = {"photo": photo,
             "chat_id": chat_id,
-            "caption": caption}
+            "caption": caption,
+            "parse_mode": parse_mode}
     requests.post(url, data)
