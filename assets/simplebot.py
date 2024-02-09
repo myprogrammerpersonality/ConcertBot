@@ -46,16 +46,16 @@ def lambda_handler(event, context):
                 event_hash = generate_event_hash(result)
                 if not result.done and not event_exists(event_hash):
                     counter += 1
-                    send_photo(chat_id, result.image, BASE_URL, str(result))
+                    send_photo(chat_id, result.image_poster_url, BASE_URL, str(result))
                     store_event(event_hash)
                     logger.info(f"Stored {result.title}")
 
             logger.info(f"Sent {counter} events!")
 
-        elif message == "/scrape all":
+        elif message == "/scrape_all":
             response = scrape_webpage()
             for result in response:
-                send_photo(chat_id, result.image, BASE_URL, str(result))
+                send_photo(chat_id, result.image_poster_url, BASE_URL, str(result))
             response = f"Sent {len(response)} events!"
             send_message(chat_id, response, BASE_URL)
             logger.info(response)
