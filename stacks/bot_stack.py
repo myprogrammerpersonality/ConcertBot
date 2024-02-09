@@ -40,8 +40,8 @@ class BotStack(Stack):
                 allow_methods=apigateway.Cors.ALL_METHODS,
             ),
             deploy_options=apigateway.StageOptions(
-                throttling_rate_limit=2, # Requests per second
-                throttling_burst_limit=5 # Max concurrent requests
+                throttling_rate_limit=2,  # Requests per second
+                throttling_burst_limit=5  # Max concurrent requests
             )
         )
 
@@ -101,4 +101,5 @@ class BotStack(Stack):
             })
         }
 
-        rule.add_target(targets.LambdaFunction(fastapi_cdk_function, event=events.RuleTargetInput.from_object(default_event)))
+        rule.add_target(targets.LambdaFunction(fastapi_cdk_function,
+                                               event=events.RuleTargetInput.from_object(default_event)))
