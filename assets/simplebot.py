@@ -74,7 +74,7 @@ def lambda_handler(event, context):
             logger.info(response)
 
         elif message == "/testPhoto":
-            response = "https://eventro.ir/images/events/logos/44543.jpg"
+            response = "https://eventro.ir/images/events/poster/44543.jpg"
             send_photo(chat_id, response, BASE_URL, "<a href='https://eventro.ir/events/44543'>🎟️ Buy Tickets</a>")
             logger.info(response)
         else:
