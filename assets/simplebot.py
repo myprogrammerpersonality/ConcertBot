@@ -6,7 +6,8 @@ from utils import (
     event_exists,
     store_event,
     generate_event_hash,
-    send_message
+    send_message,
+    send_photo
 )
 
 # Set up logging
@@ -70,6 +71,11 @@ def lambda_handler(event, context):
                        "<a href='https://eventro.ir/events/44543'>🎟️ Buy Tickets</a>" \
                        "<a href='https://eventro.ir/images/events/logos/44543.jpg'>🖼️ Event Image</a>"
             send_message(chat_id, response, BASE_URL)
+            logger.info(response)
+
+        elif message == "/testPhoto":
+            response = "https://eventro.ir/images/events/logos/44543.jpg"
+            send_photo(chat_id, response, BASE_URL, "<a href='https://eventro.ir/events/44543'>🎟️ Buy Tickets</a>")
             logger.info(response)
         else:
             response = "Please use /start or /scrape"

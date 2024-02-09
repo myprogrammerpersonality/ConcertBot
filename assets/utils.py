@@ -85,3 +85,11 @@ def send_message(chat_id, text, BASE_URL, parse_mode="html"):
             "chat_id": chat_id,
             "parse_mode": parse_mode}
     requests.post(url, data)
+
+
+def send_photo(chat_id, photo, BASE_URL, caption=""):
+    url = BASE_URL + "/sendPhoto"
+    data = {"photo": photo,
+            "chat_id": chat_id,
+            "caption": caption}
+    requests.post(url, data)
