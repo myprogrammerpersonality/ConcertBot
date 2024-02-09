@@ -46,7 +46,7 @@ def lambda_handler(event, context):
                 event_hash = generate_event_hash(result)
                 if not result.done and not event_exists(event_hash):
                     counter += 1
-                    send_message(chat_id, str(result), BASE_URL)
+                    send_photo(chat_id, result.image, BASE_URL, str(result))
                     store_event(event_hash)
                     logger.info(f"Stored {result.title}")
 
@@ -55,7 +55,7 @@ def lambda_handler(event, context):
         elif message == "/scrape all":
             response = scrape_webpage()
             for result in response:
-                send_message(chat_id, str(result), BASE_URL)
+                send_photo(chat_id, result.image, BASE_URL, str(result))
             response = f"Sent {len(response)} events!"
             send_message(chat_id, response, BASE_URL)
             logger.info(response)
@@ -76,8 +76,8 @@ def lambda_handler(event, context):
         elif message == "/testPhoto":
             event_image = "https://eventro.ir/images/events/poster/44543.jpg"
             response = "🎵🎶📣🎯\n" \
-                       "📅 23 بهمن 1402\n" \
-                       "<a href='https://eventro.ir/events/44543'>🎟️ منبع و خرید بلیت</a>"
+                       "📅 23 بهمن 1402 \n" \
+                       "<a href='https://eventro.ir/events/44543'>🎟️ منبع و خرید بلیت</a> \n"
             send_photo(chat_id, event_image, BASE_URL, response)
             logger.info(response)
         else:

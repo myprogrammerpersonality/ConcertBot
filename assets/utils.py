@@ -20,12 +20,14 @@ class Event(BaseModel):
     image: str
     date_iran: str
     date_world: str
+    code: str
+    image_poster_url: str
     done: bool
 
     def __str__(self):
-        return f"<a href='{self.title_link}'>{self.title}</a>\n" \
-               f"{self.date_iran}\n" \
-               f"{self.date_world}"
+        return f"📣 {self.title}\n " \
+               f"📅 {self.date_iran} \n " \
+               f"<a href='https://eventro.ir/events/{self.code}'>🎟️ منبع و خرید بلیت</a> \n"
 
 
 def scrape_webpage():
@@ -47,6 +49,9 @@ def scrape_webpage():
                     .find('span', 'dt1').text
         date_iran = date.strip().split('\n')[0].strip()
         date_world = date.strip().split('\n')[-1].strip()
+        code = title_link.split('/')[-1]
+        image_poster_url = f"https://eventro.ir/images/events/poster/{code}.jpg"
+
         done = False
         for detail in event.find('div', class_='allmode_text') \
                            .find_all('div', class_='event_detail'):
@@ -57,7 +62,8 @@ def scrape_webpage():
                     done = True
 
         result = Event(title=title, title_link=title_link, image=image,
-                       date_iran=date_iran, date_world=date_world, done=done)
+                       date_iran=date_iran, date_world=date_world,
+                       code=code, image_poster_url=image_poster_url, done=done)
         results.append(result)
 
     logger.info(results)
