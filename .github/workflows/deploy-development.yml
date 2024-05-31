@@ -39,5 +39,9 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
           npm install -g aws-cdk
+
+      - name: Bootstrap CDK
+        run: cdk bootstrap aws://943421037171/us-east-1
+
       - name: deploy all stacks
         run: cdk deploy --all --require-approval never
