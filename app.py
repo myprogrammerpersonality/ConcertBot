@@ -8,7 +8,7 @@ app = cdk.App()
 
 BotStack(app, "BotStack")
 
-cdk.Tags.of(app).add(key="owner", value="ali@datachef.co")
+cdk.Tags.of(app).add(key="owner", value="aliyzd1379@gmail.com")
 cdk.Tags.of(app).add(key="application", value="ConcertTelegramBot")
 
 app.synth()
